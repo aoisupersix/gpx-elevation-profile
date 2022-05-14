@@ -9,7 +9,7 @@ import { calcAverageSlope } from './slope-calculator'
  * @param unitDist Distance as a unit of calculation of distance point.
  * @returns Converted distance points.
  */
-export const convertPoint = (
+export const convertPoints = (
     points: Point[],
     unitDist = 100,
 ): DistancePoint[] => {

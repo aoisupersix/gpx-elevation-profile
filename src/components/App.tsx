@@ -1,16 +1,41 @@
+import { Point } from 'gpxparser'
 import * as React from 'react'
+import { DistancePoint } from '../models/distance-point'
+import { convertPoints } from '../models/point-converter'
 import './../assets/scss/App.scss'
 import { GpxUploader } from './GpxUploader'
 
-const reactLogo = require('./../assets/img/react_logo.svg')
+const usePoints = () => {
+    const [gpxPoints, setGpxPoints] = React.useState<Point[]>([])
+    const [distancePoints, setDistancePoints] = React.useState<DistancePoint[]>(
+        [],
+    )
 
-const App = () => (
-    <div className="app">
-        <h1>Hello World!</h1>
-        <p>Foo to the barz</p>
-        <img src={reactLogo.default} height="480" />
-        <GpxUploader />
-    </div>
-)
+    React.useEffect(() => {
+        if (gpxPoints.length === 0) {
+            setDistancePoints([])
+        } else {
+            const convertedPoints = convertPoints(gpxPoints)
+            setDistancePoints(convertedPoints)
+        }
+    }, [gpxPoints])
+
+    return {
+        gpxPoints,
+        setGpxPoints,
+        distancePoints,
+    }
+}
+
+const App = () => {
+    const { setGpxPoints } = usePoints()
+
+    return (
+        <div className="app">
+            <h1>gpx-elevation-profile</h1>
+            <GpxUploader setGpxPoints={setGpxPoints} />
+        </div>
+    )
+}
 
 export default App
