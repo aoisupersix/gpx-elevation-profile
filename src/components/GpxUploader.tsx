@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { readFileAsGpx } from '../models/gpx-reader'
+import { convertPoint } from '../models/point-converter'
 
 const useUploadedGpx = () => {
     const [isUploaded, setIsUploaded] = React.useState<boolean>(false)
@@ -8,7 +9,8 @@ const useUploadedGpx = () => {
 
         const file = (e.target as HTMLInputElement).files[0]
         readFileAsGpx(file).then((track) => {
-            console.log(track)
+            const convertedPoints = convertPoint(track.points)
+            console.log(convertedPoints)
         })
     }
 
