@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",
-    "gpxparser": "^3.0.8"
+    "gpxparser": "^3.0.8",
+    "react-json-pretty": "^2.2.0"
   }
 }

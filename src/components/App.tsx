@@ -1,5 +1,8 @@
 import { Point } from 'gpxparser'
+import JSONPretty from 'react-json-pretty'
+import 'react-json-pretty/themes/monikai.css'
 import * as React from 'react'
+
 import { DistancePoint } from '../models/distance-point'
 import { convertPoints } from '../models/point-converter'
 import './../assets/scss/App.scss'
@@ -28,12 +31,13 @@ const usePoints = () => {
 }
 
 const App = () => {
-    const { setGpxPoints } = usePoints()
+    const { setGpxPoints, distancePoints } = usePoints()
 
     return (
         <div className="app">
             <h1>gpx-elevation-profile</h1>
             <GpxUploader setGpxPoints={setGpxPoints} />
+            <JSONPretty data={distancePoints} />
         </div>
     )
 }
