@@ -1,10 +1,17 @@
+import { Button } from '@mui/material'
 import { Point } from 'gpxparser'
 import * as React from 'react'
+import styled from 'styled-components'
 import { readFileAsGpx } from '../models/gpx-reader'
 
 interface GpxUploaderProps {
+    name: string
     setGpxPoints: React.Dispatch<React.SetStateAction<Point[]>>
 }
+
+const Input = styled.input`
+    display: none;
+`
 
 export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
     const onChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -14,5 +21,17 @@ export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
         })
     }
 
-    return <input type="file" accept=".gpx" onChange={onChange} />
+    return (
+        <label htmlFor={`upload-button-${props.name}`}>
+            <Input
+                id={`upload-button-${props.name}`}
+                type="file"
+                accept=".gpx"
+                onChange={onChange}
+            />
+            <Button variant="contained" component="span">
+                GPXをアップロード
+            </Button>
+        </label>
+    )
 }
