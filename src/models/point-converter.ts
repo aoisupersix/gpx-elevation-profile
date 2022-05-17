@@ -2,6 +2,7 @@ import { Point } from 'gpxparser'
 import { calcDistance } from './distance-calculator'
 import { DistancePoint } from './distance-point'
 import { calcAverageSlope } from './slope-calculator'
+import { ceilToMultiple } from './util'
 
 /**
  * Converts a GPX points to a distance points.
@@ -39,7 +40,7 @@ export const convertPoints = (
             }
             convertedPoints.push(convertedPoint)
 
-            segmentBoundary = Math.ceil(totalDist / unitDist) * unitDist
+            segmentBoundary = ceilToMultiple(totalDist, unitDist)
             segmentHDist = 0
             segmentVInitialDist = point.ele
         }
