@@ -11,12 +11,15 @@ import {
     CardContent,
     Typography,
 } from '@mui/material'
+import { Track } from 'gpxparser'
 import JSONPretty from 'react-json-pretty'
 
 import { DistancePoint } from '../models/distance-point'
 import { ElevationGraph } from './ElevationGraph'
 
 interface ElevationViewerProps {
+    name: string
+    track: Track
     points: DistancePoint[]
 }
 
@@ -24,7 +27,7 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
     return (
         <Card variant="outlined">
             <CardContent>
-                <Typography variant="h3">Result</Typography>
+                <Typography variant="h5">Result: {props.name}</Typography>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
