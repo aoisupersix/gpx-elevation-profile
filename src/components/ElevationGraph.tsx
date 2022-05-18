@@ -1,7 +1,14 @@
 import * as React from 'react'
 
 import { Button } from '@mui/material'
-import { ChartData, Chart, ChartOptions, Color, registerables } from 'chart.js'
+import {
+    ChartData,
+    Chart,
+    ChartOptions,
+    Color,
+    registerables,
+    Plugin,
+} from 'chart.js'
 import 'react-json-pretty/themes/monikai.css'
 import { Bar } from 'react-chartjs-2'
 import styled from 'styled-components'
@@ -76,6 +83,19 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         },
     }
 
+    const barPlugins: Plugin<'bar'>[] = [
+        {
+            id: 'render-background',
+            afterRender: (chart) => {
+                chart.ctx.save()
+                chart.ctx.globalCompositeOperation = 'destination-over'
+                chart.ctx.fillStyle = 'white'
+                chart.ctx.fillRect(0, 0, chart.width, chart.height)
+                chart.ctx.restore()
+            },
+        },
+    ]
+
     const labels = props.points.map((p) => p.totalDistance)
     const colors: Color[] = props.points.map((p) => {
         const slope = Math.abs(p.averageSlope)
@@ -117,7 +137,12 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
     return (
         <div>
             <ChartCanvas className="chart-container">
-                <Bar data={barData} options={barOptions} ref={chartRef} />
+                <Bar
+                    data={barData}
+                    options={barOptions}
+                    ref={chartRef}
+                    plugins={barPlugins}
+                />
             </ChartCanvas>
             <Button onClick={onClick}>PNGダウンロード</Button>
         </div>
