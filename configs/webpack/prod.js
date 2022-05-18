@@ -1,6 +1,7 @@
 // production config
-const { merge } = require('webpack-merge')
 const { resolve } = require('path')
+
+const { merge } = require('webpack-merge')
 
 const commonConfig = require('./common')
 
@@ -9,7 +10,7 @@ module.exports = merge(commonConfig, {
   output: {
     filename: 'js/bundle.[contenthash].min.js',
     path: resolve(__dirname, '../../dist'),
-    publicPath: '/',
+    publicPath: '/gpx-elevation-profile/',
   },
   devtool: 'source-map',
   externals: {

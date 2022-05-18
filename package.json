@@ -10,7 +10,7 @@
   "bugs": {
     "url": "https://github.com/aoisupersix/gpx-elevation-profile/issues"
   },
-  "homepage": "https://github.com/aoisupersix/gpx-elevation-profile",
+  "homepage": "https://aoisupersix.github.io/gpx-elevation-profile",
   "scripts": {
     "build": "npm run clean-dist && webpack --config=configs/webpack/prod.js",
     "clean-dist": "rimraf dist/*",
