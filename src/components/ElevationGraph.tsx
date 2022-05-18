@@ -14,10 +14,12 @@ import { Bar } from 'react-chartjs-2'
 import styled from 'styled-components'
 
 import { DistancePoint } from '../models/distance-point'
+import { ProfileSetting } from '../models/profile-setting'
 import { ceilToMultiple, chunk, roundByDigits } from '../models/util'
 
 interface ElevationViewerProps {
     points: DistancePoint[]
+    setting: ProfileSetting
 }
 
 const ChartCanvas = styled.article`

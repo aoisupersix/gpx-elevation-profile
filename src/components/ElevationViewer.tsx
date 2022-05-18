@@ -15,12 +15,14 @@ import { Track } from 'gpxparser'
 import JSONPretty from 'react-json-pretty'
 
 import { DistancePoint } from '../models/distance-point'
+import { ProfileSetting } from '../models/profile-setting'
 import { ElevationGraph } from './ElevationGraph'
 
 interface ElevationViewerProps {
     name: string
     track: Track
     points: DistancePoint[]
+    setting: ProfileSetting
 }
 
 export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
@@ -37,7 +39,10 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                         <Typography>斜度プロファイル</Typography>
                     </AccordionSummary>
                     <AccordionSummary>
-                        <ElevationGraph points={props.points} />
+                        <ElevationGraph
+                            points={props.points}
+                            setting={props.setting}
+                        />
                     </AccordionSummary>
                 </Accordion>
                 <Accordion TransitionProps={{ timeout: 300 }}>
