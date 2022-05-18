@@ -29,7 +29,9 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
     return (
         <Card variant="outlined">
             <CardContent>
-                <Typography variant="h5">Result: {props.name}</Typography>
+                <Typography variant="h5" gutterBottom>
+                    Result: {props.name}
+                </Typography>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}

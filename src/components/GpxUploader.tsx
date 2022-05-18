@@ -1,21 +1,26 @@
 import * as React from 'react'
 
-import { Button } from '@mui/material'
+import { Button, ButtonGroup } from '@mui/material'
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
 
 import { readFileAsGpx } from '../models/gpx-reader'
 
 interface GpxUploaderProps {
-    name: string
+    fileName?: string
     onUpload: (gpx: Track, file: File) => void
 }
 
-const Input = styled.input`
+const HiddenInput = styled.input`
     display: none;
 `
 
 export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
+    const inputRef = React.useRef(null)
+
+    const onClickUploadButton = () => {
+        inputRef.current.click()
+    }
     const onChange = (e: React.FormEvent<HTMLInputElement>) => {
         const file = (e.target as HTMLInputElement).files[0]
         readFileAsGpx(file).then((track) => {
@@ -24,16 +29,19 @@ export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
     }
 
     return (
-        <label htmlFor={`upload-button-${props.name}`}>
-            <Input
-                id={`upload-button-${props.name}`}
+        <div>
+            <ButtonGroup variant="contained" aria-label="primary button group">
+                <Button disabled>
+                    {props.fileName ?? 'ファイルをアップロードしてください。'}
+                </Button>
+                <Button onClick={onClickUploadButton}>GPXをアップロード</Button>
+            </ButtonGroup>
+            <HiddenInput
                 type="file"
                 accept=".gpx"
                 onChange={onChange}
+                ref={inputRef}
             />
-            <Button variant="contained" component="span">
-                GPXをアップロード
-            </Button>
-        </label>
+        </div>
     )
 }

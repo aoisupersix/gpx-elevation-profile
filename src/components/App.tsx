@@ -96,8 +96,8 @@ const App = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <GpxUploader
+                            fileName={file?.name}
                             onUpload={onGpxUpload}
-                            name="gpxuploader"
                         />
                     </Grid>
                 </Grid>
