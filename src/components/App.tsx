@@ -1,14 +1,15 @@
-import { Point } from 'gpxparser'
 import * as React from 'react'
-import CssBaseline from '@mui/material/CssBaseline'
+
 import { Typography } from '@mui/material'
+import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { Point } from 'gpxparser'
 
 import { DistancePoint } from '../models/distance-point'
 import { convertPoints } from '../models/point-converter'
-import { GpxUploader } from './GpxUploader'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { Spacer } from './Spacer'
 import { ElevationViewer } from './ElevationViewer'
+import { GpxUploader } from './GpxUploader'
+import { Spacer } from './Spacer'
 
 const usePoints = () => {
     const [gpxPoints, setGpxPoints] = React.useState<Point[]>([])

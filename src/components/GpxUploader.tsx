@@ -1,7 +1,9 @@
+import * as React from 'react'
+
 import { Button } from '@mui/material'
 import { Point } from 'gpxparser'
-import * as React from 'react'
 import styled from 'styled-components'
+
 import { readFileAsGpx } from '../models/gpx-reader'
 
 interface GpxUploaderProps {

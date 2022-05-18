@@ -1,4 +1,5 @@
 import { Point } from 'gpxparser'
+
 import { calcDistance } from './distance-calculator'
 import { DistancePoint } from './distance-point'
 import { calcAverageSlope } from './slope-calculator'

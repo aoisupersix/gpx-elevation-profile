@@ -1,10 +1,11 @@
 import * as React from 'react'
-import { Chart, ChartOptions, Color, registerables } from 'chart.js'
+
+import { ChartData, Chart, ChartOptions, Color, registerables } from 'chart.js'
 import 'react-json-pretty/themes/monikai.css'
-import styled from 'styled-components'
 import { Bar } from 'react-chartjs-2'
+import styled from 'styled-components'
+
 import { DistancePoint } from '../models/distance-point'
-import { ChartData } from 'chart.js'
 import { ceilToMultiple, chunk, roundByDigits } from '../models/util'
 
 interface ElevationViewerProps {

@@ -1,6 +1,7 @@
 import * as React from 'react'
+
 import 'react-json-pretty/themes/monikai.css'
-import JSONPretty from 'react-json-pretty'
+
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import {
     Accordion,
@@ -10,7 +11,8 @@ import {
     CardContent,
     Typography,
 } from '@mui/material'
-import { Bar } from 'react-chartjs-2'
+import JSONPretty from 'react-json-pretty'
+
 import { DistancePoint } from '../models/distance-point'
 import { ElevationGraph } from './ElevationGraph'
 
