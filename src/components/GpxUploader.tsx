@@ -1,6 +1,12 @@
 import * as React from 'react'
 
-import { Button, ButtonGroup } from '@mui/material'
+import {
+    Button,
+    ButtonGroup,
+    Card,
+    CardContent,
+    CardHeader,
+} from '@mui/material'
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
 
@@ -29,19 +35,28 @@ export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
     }
 
     return (
-        <div>
-            <ButtonGroup variant="contained" aria-label="primary button group">
-                <Button disabled>
-                    {props.fileName ?? 'ファイルをアップロードしてください。'}
-                </Button>
-                <Button onClick={onClickUploadButton}>GPXをアップロード</Button>
-            </ButtonGroup>
-            <HiddenInput
-                type="file"
-                accept=".gpx"
-                onChange={onChange}
-                ref={inputRef}
-            />
-        </div>
+        <Card variant="outlined">
+            <CardHeader variant="outlined" title="GPXファイル選択" />
+            <CardContent>
+                <ButtonGroup
+                    variant="contained"
+                    aria-label="primary button group"
+                >
+                    <Button disabled>
+                        {props.fileName ??
+                            'ファイルをアップロードしてください。'}
+                    </Button>
+                    <Button onClick={onClickUploadButton}>
+                        GPXをアップロード
+                    </Button>
+                </ButtonGroup>
+                <HiddenInput
+                    type="file"
+                    accept=".gpx"
+                    onChange={onChange}
+                    ref={inputRef}
+                />
+            </CardContent>
+        </Card>
     )
 }
