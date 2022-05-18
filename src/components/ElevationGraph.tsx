@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import { Button } from '@mui/material'
 import { ChartData, Chart, ChartOptions, Color, registerables } from 'chart.js'
 import 'react-json-pretty/themes/monikai.css'
 import { Bar } from 'react-chartjs-2'
@@ -104,9 +105,21 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         ],
     }
 
+    const chartRef = React.useRef(null)
+    const onClick = () => {
+        const image = chartRef.current.toBase64Image()
+        const a = document.createElement('a')
+        a.download = 'elevation-graph.png'
+        a.href = image
+        a.click()
+    }
+
     return (
-        <ChartCanvas className="chart-container">
-            <Bar data={barData} options={barOptions} />
-        </ChartCanvas>
+        <div>
+            <ChartCanvas className="chart-container">
+                <Bar data={barData} options={barOptions} ref={chartRef} />
+            </ChartCanvas>
+            <Button onClick={onClick}>PNGダウンロード</Button>
+        </div>
     )
 }
