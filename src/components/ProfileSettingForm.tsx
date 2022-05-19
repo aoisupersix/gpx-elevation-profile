@@ -7,12 +7,11 @@ import {
     CardContent,
     CardHeader,
     Grid,
-    Stack,
     TextField,
-    Typography,
 } from '@mui/material'
 
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
+import { IconicTypography } from './IconicTypography'
 
 interface ProfileSettingProps {
     setting?: ProfileSetting
@@ -39,10 +38,11 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
             <CardHeader
                 variant="outlined"
                 title={
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <SettingsIcon color="primary" />
-                        <Typography variant="h5">算出設定</Typography>
-                    </Stack>
+                    <IconicTypography
+                        icon={<SettingsIcon color="primary" />}
+                        text="算出設定"
+                        variant="h5"
+                    />
                 }
             />
             <CardContent>

@@ -7,13 +7,12 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Stack,
-    Typography,
 } from '@mui/material'
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
 
 import { readFileAsGpx } from '../models/gpx-reader'
+import { IconicTypography } from './IconicTypography'
 
 interface GpxUploaderProps {
     fileName?: string
@@ -42,10 +41,11 @@ export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
             <CardHeader
                 variant="outlined"
                 title={
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <UploadFileIcon color="primary" />
-                        <Typography variant="h5">GPXファイル選択</Typography>
-                    </Stack>
+                    <IconicTypography
+                        icon={<UploadFileIcon color="primary" />}
+                        text="GPXファイル選択"
+                        variant="h5"
+                    />
                 }
             />
             <CardContent>

@@ -13,8 +13,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Stack,
-    Typography,
 } from '@mui/material'
 import { Track } from 'gpxparser'
 import JSONPretty from 'react-json-pretty'
@@ -22,6 +20,7 @@ import JSONPretty from 'react-json-pretty'
 import { DistancePoint } from '../models/distance-point'
 import { ProfileSetting } from '../models/profile-setting'
 import { ElevationGraph } from './ElevationGraph'
+import { IconicTypography } from './IconicTypography'
 
 interface ElevationViewerProps {
     name: string
@@ -35,10 +34,11 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
         <Card variant="outlined">
             <CardHeader
                 title={
-                    <Stack direction="row" alignItems="center" gap={1}>
-                        <AnalyticsIcon color="primary" />
-                        <Typography variant="h5">{props.name}</Typography>
-                    </Stack>
+                    <IconicTypography
+                        icon={<AnalyticsIcon color="primary" />}
+                        text={props.name}
+                        variant="h5"
+                    />
                 }
             />
             <CardContent>
@@ -48,10 +48,10 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                         aria-controls="panel2-content"
                         id="panel2-header"
                     >
-                        <Stack direction="row" alignItems="center" gap={1}>
-                            <BarChartIcon color="primary" />
-                            <Typography>斜度プロファイル</Typography>
-                        </Stack>
+                        <IconicTypography
+                            icon={<BarChartIcon color="primary" />}
+                            text="斜度プロファイル"
+                        />
                     </AccordionSummary>
                     <AccordionSummary>
                         <ElevationGraph
@@ -66,12 +66,10 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                         aria-controls="panel1-content"
                         id="panel1-header"
                     >
-                        <Stack direction="row" alignItems="center" gap={1}>
-                            <DataObjectIcon color="primary" />
-                            <Typography>
-                                ポイント間の距離と勾配を算出したJSON
-                            </Typography>
-                        </Stack>
+                        <IconicTypography
+                            icon={<DataObjectIcon color="primary" />}
+                            text="ポイント間の距離と勾配を算出したJSON"
+                        />
                     </AccordionSummary>
                     <AccordionDetails>
                         <JSONPretty data={props.points} />
