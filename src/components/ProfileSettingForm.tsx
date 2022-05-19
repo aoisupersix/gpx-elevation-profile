@@ -7,10 +7,15 @@ import {
     CardContent,
     CardHeader,
     Grid,
+    Stack,
     TextField,
+    Typography,
 } from '@mui/material'
+import { RGBColor } from 'react-color'
+import styled from 'styled-components'
 
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
+import { ColorPicker } from './ColorPicker'
 import { IconicTypography } from './IconicTypography'
 
 interface ProfileSettingProps {
@@ -18,16 +23,25 @@ interface ProfileSettingProps {
     onUpdate?: (setting: ProfileSetting) => void
 }
 
+const MarginedPicker = styled(ColorPicker)`
+    background: #fff;
+    margin: 0 10px;
+`
+
 export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
     const setting = props.setting ?? defaultSetting
     const [distanceUnit, setDistanceUnit] = React.useState<number>(
         setting.distanceUnit,
+    )
+    const [profileBgColor, setProfileBgColor] = React.useState<RGBColor>(
+        setting.profileBgColor,
     )
 
     const onUpdate = () => {
         const newSetting = {
             ...setting,
             distanceUnit: distanceUnit,
+            profileBgColor: profileBgColor,
         }
 
         props.onUpdate(newSetting)
@@ -47,7 +61,7 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
             />
             <CardContent>
                 <Grid container spacing={3}>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <TextField
                             type="number"
                             variant="standard"
@@ -57,6 +71,15 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                                 setDistanceUnit(Number.parseInt(e.target.value))
                             }
                         />
+                    </Grid>
+                    <Grid item>
+                        <Stack direction="row">
+                            <Typography>斜度プロファイル背景色</Typography>
+                            <MarginedPicker
+                                color={profileBgColor}
+                                onChange={(c) => setProfileBgColor(c.rgb)}
+                            />
+                        </Stack>
                     </Grid>
                     <Grid item xs={12}>
                         <Button variant="contained" onClick={onUpdate}>

@@ -6,16 +6,14 @@ import { Track } from 'gpxparser'
 
 import { DistancePoint } from '../models/distance-point'
 import { convertPoints } from '../models/point-converter'
-import { ProfileSetting } from '../models/profile-setting'
+import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { ElevationViewer } from './ElevationViewer'
 import { GpxUploader } from './GpxUploader'
 import { ProfileSettingForm } from './ProfileSettingForm'
 import { Spacer } from './Spacer'
 
 const useGpx = () => {
-    const [setting, setSetting] = React.useState<ProfileSetting>({
-        distanceUnit: 100,
-    })
+    const [setting, setSetting] = React.useState<ProfileSetting>(defaultSetting)
     const [file, setFile] = React.useState<File | undefined>()
     const [track, setTrack] = React.useState<Track | undefined>()
     const [distancePoints, setDistancePoints] = React.useState<DistancePoint[]>(
