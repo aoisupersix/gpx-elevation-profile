@@ -1,11 +1,14 @@
 import * as React from 'react'
 
+import UploadFileIcon from '@mui/icons-material/UploadFile'
 import {
     Button,
     ButtonGroup,
     Card,
     CardContent,
     CardHeader,
+    Stack,
+    Typography,
 } from '@mui/material'
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
@@ -36,7 +39,15 @@ export const GpxUploader: React.FC<GpxUploaderProps> = (props) => {
 
     return (
         <Card variant="outlined">
-            <CardHeader variant="outlined" title="GPXファイル選択" />
+            <CardHeader
+                variant="outlined"
+                title={
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <UploadFileIcon color="primary" />
+                        <Typography variant="h5">GPXファイル選択</Typography>
+                    </Stack>
+                }
+            />
             <CardContent>
                 <ButtonGroup
                     variant="contained"

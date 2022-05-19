@@ -1,12 +1,15 @@
 import React from 'react'
 
+import SettingsIcon from '@mui/icons-material/Settings'
 import {
     Button,
     Card,
     CardContent,
     CardHeader,
     Grid,
+    Stack,
     TextField,
+    Typography,
 } from '@mui/material'
 
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
@@ -33,7 +36,15 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
 
     return (
         <Card variant="outlined">
-            <CardHeader variant="outlined" title="算出設定" />
+            <CardHeader
+                variant="outlined"
+                title={
+                    <Stack direction="row" alignItems="center" gap={1}>
+                        <SettingsIcon color="primary" />
+                        <Typography variant="h5">算出設定</Typography>
+                    </Stack>
+                }
+            />
             <CardContent>
                 <Grid container spacing={3}>
                     <Grid item>
