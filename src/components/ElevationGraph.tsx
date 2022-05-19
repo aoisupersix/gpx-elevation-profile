@@ -98,7 +98,16 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         },
     ]
 
-    const labels = props.points.map((p) => p.totalDistance)
+    const labels = props.points.map(
+        (p) =>
+            `合計距離:${roundByDigits(
+                p.totalDistance,
+                1,
+            )}m 標高:${roundByDigits(p.elevation, 1)}m 平均勾配:${roundByDigits(
+                p.averageSlope,
+                1,
+            )}%`,
+    )
     const colors: Color[] = props.points.map((p) => {
         const slope = Math.abs(p.averageSlope)
         if (slope >= 20) {
@@ -118,7 +127,6 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         labels: labels,
         datasets: [
             {
-                label: 'Dataset',
                 backgroundColor: colors,
                 barPercentage: 1,
                 categoryPercentage: 1,
