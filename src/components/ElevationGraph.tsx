@@ -2,11 +2,14 @@ import * as React from 'react'
 
 import { Button } from '@mui/material'
 import {
-    ChartData,
+    BarController,
+    BarElement,
+    CategoryScale,
     Chart,
+    ChartData,
     ChartOptions,
     Color,
-    registerables,
+    LinearScale,
     Plugin,
 } from 'chart.js'
 import 'react-json-pretty/themes/monikai.css'
@@ -27,7 +30,7 @@ const ChartCanvas = styled.article`
     width: 90vw;
 `
 
-Chart.register(...registerables)
+Chart.register(BarController, BarElement, CategoryScale, LinearScale)
 
 const pointLabelNumbers = 7
 
