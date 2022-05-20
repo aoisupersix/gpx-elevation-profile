@@ -1,6 +1,6 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
-  rootDir: '..',
+  rootDir: '.',
   testEnvironment: 'jsdom',
   coverageDirectory: '<rootDir>/tests/__coverage__/',
   setupFiles: ['<rootDir>/tests/__mocks__/shim.js'],
