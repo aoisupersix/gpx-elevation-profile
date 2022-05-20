@@ -85,11 +85,11 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         },
     }
 
-    const bgColor = props.setting.profileBgColor
     const barPlugins: Plugin<'bar'>[] = [
         {
             id: 'render-background',
-            afterRender: (chart) => {
+            beforeDraw: (chart) => {
+                const bgColor = props.setting.profileBgColor
                 chart.ctx.save()
                 chart.ctx.globalCompositeOperation = 'destination-over'
                 chart.ctx.fillStyle = `rgba(${bgColor.r},${bgColor.g},${bgColor.b},${bgColor.a})`
@@ -149,6 +149,7 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         <div>
             <ChartCanvas className="chart-container">
                 <Bar
+                    redraw
                     data={barData}
                     options={barOptions}
                     ref={chartRef}
