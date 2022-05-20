@@ -53,6 +53,9 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                 title: {
                     display: true,
                     text: '距離(km)',
+                    font: {
+                        size: 20,
+                    },
                 },
                 grid: {
                     offset: false,
@@ -70,15 +73,26 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
 
                         return null
                     },
+                    font: {
+                        size: 20,
+                    },
                 },
             },
             yAxis: {
                 title: {
                     display: true,
                     text: '標高(m)',
+                    font: {
+                        size: 20,
+                    },
                 },
                 grid: {
                     z: 1,
+                },
+                ticks: {
+                    font: {
+                        size: 20,
+                    },
                 },
                 min: Math.max(0, ceilToMultiple(minElevation - 100, 100)),
             },
