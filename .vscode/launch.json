@@ -9,8 +9,22 @@
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
       "sourceMapPathOverrides": {
-        "webpack:///./*": "${webRoot}/src/*",
+        "webpack:///./*": "${webRoot}/src/*"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "jest[debug]",
+      "program": "${workspaceRoot}/node_modules/.bin/jest",
+      "args": [
+        "--runInBand"
+      ],
+      "windows": {
+        "program": "${workspaceRoot}/node_modules/jest/bin/jest.js"
       },
-    }
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    },
   ]
 }
