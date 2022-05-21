@@ -75,11 +75,17 @@ const App = () => {
     return (
         <div className="app">
             <ThemeProvider theme={theme}>
-                <Typography variant="h3" sx={{ fontWeight: 'bold' }}>
+                <Typography
+                    variant="h3"
+                    sx={{ fontWeight: 'bold' }}
+                    gutterBottom
+                >
                     gpx-elevation-profile
                 </Typography>
-                <Typography variant="subtitle1" gutterBottom>
-                    GPXファイルから斜度のプロファイルを生成します。
+                <Typography gutterBottom>
+                    GPXファイルから斜度を取得して、平均勾配ごとに色分けしたグラフを生成します。
+                    <br />
+                    処理は全てクライアントサイドで完結するため、GPXファイルがサーバにアップロードされることはありません。
                 </Typography>
                 <Grid
                     container
