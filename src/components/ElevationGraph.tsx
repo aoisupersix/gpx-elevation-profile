@@ -11,6 +11,7 @@ import {
     Color,
     LinearScale,
     Plugin,
+    Tooltip,
 } from 'chart.js'
 import 'react-json-pretty/themes/monikai.css'
 import { Bar } from 'react-chartjs-2'
@@ -30,7 +31,7 @@ const ChartCanvas = styled.article`
     width: 90vw;
 `
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale)
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip)
 
 const pointLabelNumbers = 7
 
