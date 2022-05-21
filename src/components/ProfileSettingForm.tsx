@@ -16,6 +16,7 @@ import styled from 'styled-components'
 
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { ColorPicker } from './ColorPicker'
+import { ElevationColorList } from './ElevationColorList'
 import { IconicTypography } from './IconicTypography'
 
 interface ProfileSettingProps {
@@ -72,13 +73,21 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                             }
                         />
                     </Grid>
-                    <Grid item>
+                    <Grid item xs={12}>
                         <Stack direction="row">
                             <Typography>斜度プロファイル背景色</Typography>
                             <MarginedPicker
                                 color={profileBgColor}
                                 onChange={(c) => setProfileBgColor(c.rgb)}
                             />
+                        </Stack>
+                    </Grid>
+                    <Grid item>
+                        <Stack direction="column">
+                            <Typography gutterBottom>
+                                斜度ごとの色分け
+                            </Typography>
+                            <ElevationColorList />
                         </Stack>
                     </Grid>
                     <Grid item xs={12}>
