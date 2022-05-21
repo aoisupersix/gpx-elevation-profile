@@ -132,7 +132,7 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         if (slope >= 20) {
             return 'black'
         } else if (slope >= 15) {
-            return 'gray'
+            return 'maroon'
         } else if (slope >= 10) {
             return 'red'
         } else if (slope >= 5) {
