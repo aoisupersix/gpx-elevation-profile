@@ -8,6 +8,7 @@ import { DistancePoint } from '../models/distance-point'
 import { convertPoints } from '../models/point-converter'
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { ElevationViewer } from './ElevationViewer'
+import { Footer } from './Footer'
 import { GpxUploader } from './GpxUploader'
 import { ProfileSettingForm } from './ProfileSettingForm'
 import { Spacer } from './Spacer'
@@ -109,6 +110,7 @@ const App = () => {
                         setting={setting}
                     />
                 )}
+                <Footer />
             </ThemeProvider>
         </div>
     )
