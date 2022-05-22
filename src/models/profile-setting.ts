@@ -26,7 +26,7 @@ export interface ProfileSetting {
  * Default settings of elevation profile.
  */
 export const defaultSetting: ProfileSetting = {
-    distanceUnit: 100,
+    distanceUnit: 50,
     profileBgColor: { r: 255, g: 255, b: 255, a: 1 },
     elevationColors: [
         { min: -50, max: -20, color: { r: 0, g: 0, b: 0, a: 1 } },
