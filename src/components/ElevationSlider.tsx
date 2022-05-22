@@ -35,7 +35,7 @@ export const ElevationSlider: React.FC<ElevationSliderProps> = (props) => {
             <Slider
                 min={-50}
                 max={50}
-                getAriaLabel={() => 'Temperature range'}
+                getAriaLabel={() => '斜度範囲'}
                 step={1}
                 marks={marks}
                 value={[props.minValue, props.maxValue]}
