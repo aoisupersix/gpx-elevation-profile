@@ -11,9 +11,9 @@ import {
     TextField,
     Typography,
 } from '@mui/material'
-import { RGBColor } from 'react-color'
 import styled from 'styled-components'
 
+import { ElevationColor } from '../models/elevation-color'
 import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { ColorPicker } from './ColorPicker'
 import { ElevationColorList } from './ElevationColorList'
@@ -30,22 +30,21 @@ const MarginedPicker = styled(ColorPicker)`
 `
 
 export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
-    const setting = props.setting ?? defaultSetting
-    const [distanceUnit, setDistanceUnit] = React.useState<number>(
-        setting.distanceUnit,
+    const [setting, setSetting] = React.useState<ProfileSetting>(
+        props.setting ?? defaultSetting,
     )
-    const [profileBgColor, setProfileBgColor] = React.useState<RGBColor>(
-        setting.profileBgColor,
-    )
+
+    const onChangeElevationColor = (item: ElevationColor, idx: number) => {
+        const newColors = setting.elevationColors.map((v, i) =>
+            i === idx ? item : v,
+        )
+        setSetting({ ...setting, elevationColors: newColors })
+    }
 
     const onUpdate = () => {
-        const newSetting = {
-            ...setting,
-            distanceUnit: distanceUnit,
-            profileBgColor: profileBgColor,
+        if (props.onUpdate !== undefined) {
+            props.onUpdate(setting)
         }
-
-        props.onUpdate(newSetting)
     }
 
     return (
@@ -67,9 +66,14 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                             type="number"
                             variant="standard"
                             label="斜度算出単位"
-                            value={distanceUnit}
+                            value={setting.distanceUnit}
                             onChange={(e) =>
-                                setDistanceUnit(Number.parseInt(e.target.value))
+                                setSetting({
+                                    ...setting,
+                                    distanceUnit: Number.parseInt(
+                                        e.target.value,
+                                    ),
+                                })
                             }
                         />
                     </Grid>
@@ -77,8 +81,13 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                         <Stack direction="row">
                             <Typography>斜度プロファイル背景色</Typography>
                             <MarginedPicker
-                                color={profileBgColor}
-                                onChange={(c) => setProfileBgColor(c.rgb)}
+                                color={setting.profileBgColor}
+                                onChange={(c) =>
+                                    setSetting({
+                                        ...setting,
+                                        profileBgColor: c.rgb,
+                                    })
+                                }
                             />
                         </Stack>
                     </Grid>
@@ -87,7 +96,10 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                             <Typography gutterBottom>
                                 斜度ごとの色分け
                             </Typography>
-                            <ElevationColorList />
+                            <ElevationColorList
+                                items={setting.elevationColors}
+                                onChange={onChangeElevationColor}
+                            />
                         </Stack>
                     </Grid>
                     <Grid item xs={12}>
