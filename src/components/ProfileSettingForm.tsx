@@ -41,6 +41,26 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
         setSetting({ ...setting, elevationColors: newColors })
     }
 
+    const onAddElevationColor = () => {
+        const newColor: ElevationColor = {
+            min: 0,
+            max: 5,
+            color: { r: 255, g: 255, b: 255, a: 1 },
+        }
+        setSetting({
+            ...setting,
+            elevationColors: [...setting.elevationColors, newColor],
+        })
+    }
+
+    const onDeleteElevationColor = (idx: number) => {
+        const colors = setting.elevationColors.filter((_, i) => i !== idx)
+        setSetting({
+            ...setting,
+            elevationColors: colors,
+        })
+    }
+
     const onUpdate = () => {
         if (props.onUpdate !== undefined) {
             props.onUpdate(setting)
@@ -99,6 +119,8 @@ export const ProfileSettingForm: React.FC<ProfileSettingProps> = (props) => {
                             <ElevationColorList
                                 items={setting.elevationColors}
                                 onChange={onChangeElevationColor}
+                                onAdd={onAddElevationColor}
+                                onDelete={onDeleteElevationColor}
                             />
                         </Stack>
                     </Grid>
