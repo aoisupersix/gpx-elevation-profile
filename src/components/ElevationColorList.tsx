@@ -21,7 +21,8 @@ import { ElevationSlider } from './ElevationSlider'
 interface ElevationColorListProps {
     items: ElevationColor[]
     onChange?: (item: ElevationColor, idx: number) => void
-    onAdded?: () => void
+    onAdd?: () => void
+    onDelete?: (idx: number, item: ElevationColor) => void
 }
 
 const CenterColorPicker = styled(ColorPicker)`
@@ -47,9 +48,15 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
         }
     }
 
-    const onAdded = () => {
-        if (props.onAdded !== undefined) {
-            props.onAdded()
+    const onAdd = () => {
+        if (props.onAdd !== undefined) {
+            props.onAdd()
+        }
+    }
+
+    const onDelete = (item: ElevationColor, idx: number) => {
+        if (props.onDelete !== undefined) {
+            props.onDelete(idx, item)
         }
     }
 
@@ -57,7 +64,11 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
         <ListItem
             key={idx}
             secondaryAction={
-                <IconButton edge="end" aria-label="delete">
+                <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => onDelete(ec, idx)}
+                >
                     <DeleteIcon />
                 </IconButton>
             }
@@ -83,11 +94,7 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
             <Paper>
                 <List>{listItems}</List>
             </Paper>
-            <Button
-                variant="outlined"
-                startIcon={<AddIcon />}
-                onClick={onAdded}
-            >
+            <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
                 追加
             </Button>
         </Stack>
