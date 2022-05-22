@@ -18,6 +18,7 @@ import { Bar } from 'react-chartjs-2'
 import styled from 'styled-components'
 
 import { DistancePoint } from '../models/distance-point'
+import { getElevationColor } from '../models/elevation-color'
 import { ProfileSetting } from '../models/profile-setting'
 import { ceilToMultiple, chunk, roundByDigits } from '../models/util'
 
@@ -128,17 +129,15 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
             )}%`,
     )
     const colors: Color[] = props.points.map((p) => {
-        const slope = Math.abs(p.averageSlope)
-        if (slope >= 20) {
-            return 'black'
-        } else if (slope >= 15) {
-            return 'maroon'
-        } else if (slope >= 10) {
-            return 'red'
-        } else if (slope >= 5) {
-            return 'yellow'
+        const color = getElevationColor(
+            props.setting.elevationColors,
+            p.averageSlope,
+        )?.color
+        if (color === undefined) {
+            return 'gray'
         }
-        return 'lime'
+
+        return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`
     })
     const elevations = props.points.map((p) => p.elevation)
 
