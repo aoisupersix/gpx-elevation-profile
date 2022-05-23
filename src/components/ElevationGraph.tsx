@@ -1,5 +1,6 @@
 import * as React from 'react'
 
+import DownloadIcon from '@mui/icons-material/Download'
 import { Button } from '@mui/material'
 import {
     BarController,
@@ -173,7 +174,13 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                     plugins={barPlugins}
                 />
             </ChartCanvas>
-            <Button onClick={onClick}>PNGダウンロード</Button>
+            <Button
+                onClick={onClick}
+                startIcon={<DownloadIcon />}
+                variant="contained"
+            >
+                PNGダウンロード
+            </Button>
         </div>
     )
 }
