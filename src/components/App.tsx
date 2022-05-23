@@ -12,7 +12,7 @@ import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { AppBar } from './AppBar'
 import { ElevationViewer } from './ElevationViewer'
 import { GpxUploader } from './GpxUploader'
-import { ProfileSettingForm } from './ProfileSettingForm'
+import { SettingsDrawer } from './SettingsDrawer'
 import { Spacer } from './Spacer'
 
 const useGpx = () => {
@@ -63,6 +63,8 @@ const MarginedBody = styled.div`
 `
 
 const App = () => {
+    const [isOpenSettings, setIsOpenSettings] = React.useState<boolean>(false)
+
     const {
         setting,
         setSetting,
@@ -82,7 +84,12 @@ const App = () => {
         <div className="app">
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <AppBar />
+                <AppBar onOpenSettings={() => setIsOpenSettings(true)} />
+                <SettingsDrawer
+                    open={isOpenSettings}
+                    onUpdate={setSetting}
+                    onClose={() => setIsOpenSettings(false)}
+                />
                 <MarginedBody>
                     <Typography gutterBottom>
                         GPXファイルから斜度を取得して、平均勾配ごとに色分けしたグラフを生成します。
@@ -95,12 +102,6 @@ const App = () => {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Grid item xs={12}>
-                            <ProfileSettingForm
-                                setting={setting}
-                                onUpdate={setSetting}
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <GpxUploader
                                 fileName={file?.name}

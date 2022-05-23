@@ -8,7 +8,6 @@ import {
     List,
     ListItem,
     ListItemText,
-    Paper,
     Stack,
 } from '@mui/material'
 import { ColorResult } from 'react-color'
@@ -72,6 +71,11 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
                     <DeleteIcon />
                 </IconButton>
             }
+            sx={{
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: (t) => t.palette.divider,
+            }}
         >
             <ListItemText>
                 <Stack direction="row" gap={3}>
@@ -91,9 +95,7 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
 
     return (
         <Stack direction="column">
-            <Paper>
-                <List>{listItems}</List>
-            </Paper>
+            <List>{listItems}</List>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={onAdd}>
                 追加
             </Button>

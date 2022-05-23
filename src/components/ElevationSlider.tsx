@@ -28,11 +28,12 @@ export const ElevationSlider: React.FC<ElevationSliderProps> = (props) => {
     }
 
     return (
-        <Box minWidth={400}>
+        <Box minWidth={300}>
             <Typography variant="caption">
                 斜度(%):{props.minValue}~{props.maxValue}%
             </Typography>
             <Slider
+                size="small"
                 min={-50}
                 max={50}
                 getAriaLabel={() => '斜度範囲'}

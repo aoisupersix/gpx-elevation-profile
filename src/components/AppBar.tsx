@@ -11,7 +11,11 @@ import {
     Typography,
 } from '@mui/material'
 
-export const AppBar: React.FC<Record<string, never>> = () => {
+interface AppBarProps {
+    onOpenSettings?: () => void
+}
+
+export const AppBar: React.FC<AppBarProps> = (props) => {
     return (
         <MUIAppBar position="static">
             <Toolbar>
@@ -32,7 +36,11 @@ export const AppBar: React.FC<Record<string, never>> = () => {
                 >
                     gpx-elevation-profile
                 </Typography>
-                <IconButton size="large" color="inherit">
+                <IconButton
+                    size="large"
+                    color="inherit"
+                    onClick={props.onOpenSettings}
+                >
                     <SettingsIcon />
                 </IconButton>
                 <IconButton
