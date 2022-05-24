@@ -17,7 +17,8 @@
     "lint": "eslint './src/**/*.{js,ts,tsx}' --quiet",
     "start": "npm run start-dev",
     "start-dev": "webpack serve --config=configs/webpack/dev.js",
-    "test": "jest --coverage --watchAll --config=jest.config.js"
+    "test": "jest --coverage --config=jest.config.js",
+    "testw": "jest --coverage --watchAll --config=jest.config.js"
   },
   "devDependencies": {
     "@babel/core": "^7.17.10",
