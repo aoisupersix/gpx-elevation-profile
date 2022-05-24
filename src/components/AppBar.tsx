@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import GitHubIcon from '@mui/icons-material/GitHub'
 import SettingsIcon from '@mui/icons-material/Settings'
-import ShareLocationIcon from '@mui/icons-material/ShareLocation'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import {
     AppBar as MUIAppBar,
@@ -12,6 +11,8 @@ import {
 } from '@mui/material'
 
 import { environment } from '../models/environment'
+
+const mainLogo = require('../assets/images/mainLogo.svg')
 
 interface AppBarProps {
     onOpenSettings?: () => void
@@ -28,7 +29,7 @@ export const AppBar: React.FC<AppBarProps> = (props) => {
                     disableRipple
                     sx={{ cursor: 'default' }}
                 >
-                    <ShareLocationIcon />
+                    <img src={mainLogo.default} height={24} />
                 </IconButton>
                 <Typography
                     variant="h6"
