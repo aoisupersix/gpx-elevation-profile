@@ -2,6 +2,8 @@
 const config = {
   rootDir: '.',
   testEnvironment: 'jsdom',
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.ts', 'src/**/*.tsx'],
   coverageDirectory: '<rootDir>/tests/__coverage__/',
   setupFiles: ['<rootDir>/tests/__mocks__/shim.js'],
   roots: ['<rootDir>/src/', '<rootDir>/tests/'],
