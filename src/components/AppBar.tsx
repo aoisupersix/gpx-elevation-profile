@@ -11,6 +11,8 @@ import {
     Typography,
 } from '@mui/material'
 
+import { environment } from '../models/environment'
+
 interface AppBarProps {
     onOpenSettings?: () => void
 }
@@ -35,6 +37,9 @@ export const AppBar: React.FC<AppBarProps> = (props) => {
                     gutterBottom
                 >
                     gpx-elevation-profile
+                </Typography>
+                <Typography variant="caption">
+                    v{environment.VERSION}
                 </Typography>
                 <IconButton
                     size="large"
