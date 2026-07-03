@@ -2,9 +2,10 @@
   "compilerOptions": {
     "jsx": "react",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": false,
     "skipLibCheck": true,
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "outDir": "dist",
     "target": "ESNext",
     "sourceMap": true,

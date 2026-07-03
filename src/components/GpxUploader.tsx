@@ -11,8 +11,8 @@ import {
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
 
-import { readFileAsGpx } from '../models/gpx-reader'
 import { IconicTypography } from './IconicTypography'
+import { readFileAsGpx } from '../models/gpx-reader'
 
 interface GpxUploaderProps {
     fileName?: string

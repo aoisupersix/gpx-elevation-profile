@@ -10,9 +10,8 @@ import {
     Typography,
 } from '@mui/material'
 
+import mainLogo from '../assets/images/mainLogo.svg'
 import { environment } from '../models/environment'
-
-const mainLogo = require('../assets/images/mainLogo.svg')
 
 interface AppBarProps {
     onOpenSettings?: () => void
@@ -29,7 +28,7 @@ export const AppBar: React.FC<AppBarProps> = (props) => {
                     disableRipple
                     sx={{ cursor: 'default' }}
                 >
-                    <img src={mainLogo.default} height={24} />
+                    <img src={mainLogo} height={24} />
                 </IconButton>
                 <Typography
                     variant="h6"

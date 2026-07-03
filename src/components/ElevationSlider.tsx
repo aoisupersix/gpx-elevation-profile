@@ -1,7 +1,11 @@
 import * as React from 'react'
 
-import { Mark } from '@mui/base'
 import { Box, Slider, Typography } from '@mui/material'
+
+interface Mark {
+    value: number
+    label?: string
+}
 
 interface ElevationSliderProps {
     minValue: number
@@ -28,7 +32,7 @@ export const ElevationSlider: React.FC<ElevationSliderProps> = (props) => {
     }
 
     return (
-        <Box minWidth={300}>
+        <Box sx={{ minWidth: 300 }}>
             <Typography variant="caption">
                 斜度(%):{props.minValue}~{props.maxValue}%
             </Typography>

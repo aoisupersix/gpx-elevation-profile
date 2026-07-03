@@ -6,14 +6,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { Track } from 'gpxparser'
 import styled from 'styled-components'
 
-import { DistancePoint } from '../models/distance-point'
-import { convertPoints } from '../models/point-converter'
-import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { AppBar } from './AppBar'
 import { ElevationViewer } from './ElevationViewer'
 import { GpxUploader } from './GpxUploader'
 import { SettingsDrawer } from './SettingsDrawer'
 import { Spacer } from './Spacer'
+import { DistancePoint } from '../models/distance-point'
+import { convertPoints } from '../models/point-converter'
+import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 
 const useGpx = () => {
     const [setting, setSetting] = React.useState<ProfileSetting>(defaultSetting)
@@ -99,10 +99,12 @@ const App = () => {
                     <Grid
                         container
                         spacing={3}
-                        alignItems="center"
-                        justifyContent="center"
+                        sx={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
                     >
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <GpxUploader
                                 fileName={file?.name}
                                 onUpload={onGpxUpload}

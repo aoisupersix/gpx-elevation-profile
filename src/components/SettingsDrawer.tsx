@@ -14,10 +14,10 @@ import {
 } from '@mui/material'
 import styled from 'styled-components'
 
-import { ElevationColor } from '../models/elevation-color'
-import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 import { ColorPicker } from './ColorPicker'
 import { ElevationColorList } from './ElevationColorList'
+import { ElevationColor } from '../models/elevation-color'
+import { defaultSetting, ProfileSetting } from '../models/profile-setting'
 
 interface SettingsDrawerProps {
     open?: boolean
@@ -80,19 +80,23 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = (props) => {
             open={props.open}
             anchor="right"
             onClose={close}
-            PaperProps={{ square: false, sx: { borderRadius: 3 } }}
+            slotProps={{ paper: { square: false, sx: { borderRadius: 3 } } }}
         >
             <Box
-                width={500}
-                display="flex"
-                flexDirection="column"
-                height="100%"
+                sx={{
+                    width: 500,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                }}
             >
                 <Box
-                    padding={2}
-                    justifyContent="space-between"
-                    alignItems="center"
-                    display="flex"
+                    sx={{
+                        padding: 2,
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        display: 'flex',
+                    }}
                 >
                     <Typography>設定</Typography>
                     <IconButton
@@ -105,24 +109,24 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = (props) => {
                 </Box>
                 <Divider />
                 <Box
-                    minHeight={0}
-                    display="flex"
-                    flexDirection="column"
-                    height="100%"
+                    sx={{
+                        minHeight: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                    }}
                 >
                     <Stack
                         divider={<Divider />}
                         spacing={1}
                         direction="column"
-                        flex={1}
-                        px={2}
-                        sx={{ overflowY: 'auto' }}
+                        sx={{ flex: 1, px: 2, overflowY: 'auto' }}
                     >
                         <Box>
                             <Typography
                                 variant="subtitle2"
-                                marginY={2}
                                 gutterBottom
+                                sx={{ marginY: 2 }}
                             >
                                 斜度算出単位
                             </Typography>
@@ -143,8 +147,8 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = (props) => {
                         <Box>
                             <Typography
                                 variant="subtitle2"
-                                marginY={2}
                                 gutterBottom
+                                sx={{ marginY: 2 }}
                             >
                                 斜度プロファイル背景色
                             </Typography>
@@ -161,8 +165,8 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = (props) => {
                         <Box>
                             <Typography
                                 variant="subtitle2"
-                                marginY={2}
                                 gutterBottom
+                                sx={{ marginY: 2 }}
                             >
                                 斜度ごとの色分け
                             </Typography>
@@ -174,7 +178,7 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = (props) => {
                             />
                         </Box>
                     </Stack>
-                    <Box m={1}>
+                    <Box sx={{ m: 1 }}>
                         <Button
                             variant="contained"
                             onClick={onUpdate}

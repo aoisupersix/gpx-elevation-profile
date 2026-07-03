@@ -16,10 +16,6 @@ module.exports = {
         test: [/\.jsx?$/, /\.tsx?$/],
         loader: 'babel-loader',
         exclude: /node_modules/,
-        options: {
-          presets: ['@babel/preset-env', '@babel/preset-react'],
-          plugins: ['@babel/plugin-transform-runtime'],
-        },
       },
       {
         test: /\.css$/,
@@ -31,10 +27,10 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        use: [
-          'file-loader?hash=sha512&digest=hex&name=img/[contenthash].[ext]',
-          'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false',
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[contenthash][ext]',
+        },
       },
     ],
   },

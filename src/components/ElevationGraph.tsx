@@ -287,8 +287,7 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                 <Stack
                     direction="row"
                     spacing={2}
-                    alignItems="center"
-                    sx={{ flexWrap: 'wrap' }}
+                    sx={{ alignItems: 'center', flexWrap: 'wrap' }}
                 >
                     <Button
                         onClick={onDownloadPng}

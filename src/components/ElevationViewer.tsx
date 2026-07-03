@@ -17,10 +17,10 @@ import {
 import { Track } from 'gpxparser'
 import JSONPretty from 'react-json-pretty'
 
-import { DistancePoint } from '../models/distance-point'
-import { ProfileSetting } from '../models/profile-setting'
 import { ElevationGraph } from './ElevationGraph'
 import { IconicTypography } from './IconicTypography'
+import { DistancePoint } from '../models/distance-point'
+import { ProfileSetting } from '../models/profile-setting'
 
 interface ElevationViewerProps {
     name: string
@@ -60,7 +60,7 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                         />
                     </AccordionSummary>
                 </Accordion>
-                <Accordion TransitionProps={{ timeout: 300 }}>
+                <Accordion slotProps={{ transition: { timeout: 300 } }}>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1-content"

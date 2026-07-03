@@ -13,9 +13,9 @@ import {
 import { ColorResult } from 'react-color'
 import styled from 'styled-components'
 
-import { ElevationColor } from '../models/elevation-color'
 import { ColorPicker } from './ColorPicker'
 import { ElevationSlider } from './ElevationSlider'
+import { ElevationColor } from '../models/elevation-color'
 
 interface ElevationColorListProps {
     items: ElevationColor[]
@@ -78,7 +78,7 @@ export const ElevationColorList: React.FC<ElevationColorListProps> = (
             }}
         >
             <ListItemText>
-                <Stack direction="row" gap={3}>
+                <Stack direction="row" sx={{ gap: 3 }}>
                     <ElevationSlider
                         minValue={ec.min}
                         maxValue={ec.max}
