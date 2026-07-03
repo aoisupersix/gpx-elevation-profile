@@ -20,25 +20,25 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 22.x
 
       - name: Set package version
         id: package-version
-        run: node -p -e '`::set-output name=version::${require("./package.json").version}`'
+        run: echo "version=$(node -p -e 'require("./package.json").version')" >> "$GITHUB_OUTPUT"
 
       - name: Check pre-release
         id: pre-version
-        run: node -p -e '`::set-output name=pre-version::${require("./package.json").version.includes("-")}`'
+        run: echo "pre-version=$(node -p -e 'require("./package.json").version.includes("-")')" >> "$GITHUB_OUTPUT"
 
       - name: Check tag exists
-        uses: mukunku/tag-exists-action@v1.0.0
+        uses: mukunku/tag-exists-action@v1.6.0
         id: check-tag
         with:
           tag: "v${{ steps.package-version.outputs.version }}"
@@ -52,21 +52,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v3
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 22.x
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run build
         run: npm run build
 
       - name: deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
@@ -89,19 +89,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 22.x
 
       - name: Create a GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: needs.setup.outputs.is-pre-verion != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           generate_release_notes: true
           tag_name: ${{ needs.setup.outputs.tag-name }}
-          release_name: Release ${{ needs.setup.outputs.tag-name }}
+          name: Release ${{ needs.setup.outputs.tag-name }}
