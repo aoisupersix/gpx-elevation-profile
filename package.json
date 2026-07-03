@@ -73,7 +73,7 @@
     "chart.js": "^3.7.1",
     "gpxparser": "^3.0.8",
     "mp4-muxer": "^5.2.2",
-    "react-chartjs-2": "^4.1.0",
+    "react-chartjs-2": "^5.0.0",
     "react-color": "^2.19.3",
     "react-json-pretty": "^2.2.0",
     "styled-components": "^5.3.5"
