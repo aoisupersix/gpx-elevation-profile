@@ -54,6 +54,23 @@ const renderOffscreenChart = (
 }
 
 /**
+ * Number of bars to reveal at the given animation progress (0 = start,
+ * 1 = fully revealed). At least one bar is always shown.
+ */
+export const revealCountAt = (total: number, progress: number): number =>
+    Math.max(1, Math.round(total * Math.min(Math.max(progress, 0), 1)))
+
+/**
+ * Returns a copy of the dataset where bars past `revealCount` are hidden
+ * (set to null), producing the left-to-right reveal effect.
+ */
+export const revealedData = (
+    fullData: number[],
+    revealCount: number,
+): number[] =>
+    fullData.map((v, i) => (i < revealCount ? v : (null as unknown as number)))
+
+/**
  * Exports the chart as a PNG image at the specified size.
  */
 export const exportChartPng = (
@@ -268,16 +285,12 @@ export const exportChartMp4 = async (
 
             const revealCount =
                 frame < animationFrames
-                    ? Math.max(
-                          1,
-                          Math.round(
-                              (fullData.length * (frame + 1)) / animationFrames,
-                          ),
+                    ? revealCountAt(
+                          fullData.length,
+                          (frame + 1) / animationFrames,
                       )
                     : fullData.length
-            chart.data.datasets[0].data = fullData.map((v, i) =>
-                i < revealCount ? v : (null as unknown as number),
-            )
+            chart.data.datasets[0].data = revealedData(fullData, revealCount)
             chart.update('none')
 
             const videoFrame = new VideoFrame(canvas, {
