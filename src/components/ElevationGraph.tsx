@@ -1,12 +1,20 @@
 import * as React from 'react'
 
 import DownloadIcon from '@mui/icons-material/Download'
-import { Button } from '@mui/material'
+import VideocamIcon from '@mui/icons-material/Videocam'
+import {
+    Button,
+    CircularProgress,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
 import {
     BarController,
     BarElement,
     CategoryScale,
     Chart,
+    ChartConfiguration,
     ChartData,
     ChartOptions,
     Color,
@@ -18,10 +26,13 @@ import 'react-json-pretty/themes/monikai.css'
 import { Bar } from 'react-chartjs-2'
 import styled from 'styled-components'
 
+import { exportChartMp4, exportChartPng } from '../models/chart-export'
 import { DistancePoint } from '../models/distance-point'
 import { getElevationColor } from '../models/elevation-color'
 import { ProfileSetting } from '../models/profile-setting'
 import { ceilToMultiple, chunk, roundByDigits } from '../models/util'
+
+const videoFps = 30
 
 interface ElevationViewerProps {
     points: DistancePoint[]
@@ -154,13 +165,83 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         ],
     }
 
-    const chartRef = React.useRef(null)
-    const onClick = () => {
-        const image = chartRef.current.toBase64Image()
-        const a = document.createElement('a')
-        a.download = 'elevation-graph.png'
-        a.href = image
-        a.click()
+    // Fix the y-axis max so the scale stays stable while the video reveals
+    // bars progressively (otherwise chart.js rescales per visible frame).
+    const maxElevation = props.points.reduce<number>(
+        (max, p) => Math.max(max, p.elevation),
+        Number.MIN_SAFE_INTEGER,
+    )
+    const exportConfig: ChartConfiguration<'bar'> = {
+        type: 'bar',
+        data: barData,
+        options: {
+            ...barOptions,
+            scales: {
+                ...barOptions.scales,
+                yAxis: {
+                    ...barOptions.scales?.yAxis,
+                    max: ceilToMultiple(maxElevation + 100, 100),
+                },
+            },
+        },
+        plugins: barPlugins,
+    }
+
+    const [exportWidth, setExportWidth] = React.useState(1920)
+    const [exportHeight, setExportHeight] = React.useState(1080)
+    const [durationSec, setDurationSec] = React.useState(6)
+    const [isRecording, setIsRecording] = React.useState(false)
+    const [progress, setProgress] = React.useState(0)
+    const [exportError, setExportError] = React.useState<string | null>(null)
+
+    const sizeIsValid = exportWidth > 0 && exportHeight > 0
+    const canExportVideo = sizeIsValid && durationSec > 0 && !isRecording
+
+    const onDownloadPng = () => {
+        setExportError(null)
+        try {
+            exportChartPng(
+                exportConfig,
+                exportWidth,
+                exportHeight,
+                'elevation-graph.png',
+            )
+        } catch (e) {
+            setExportError(
+                e instanceof Error
+                    ? e.message
+                    : '画像の書き出しに失敗しました。',
+            )
+        }
+    }
+
+    const onDownloadMp4 = async () => {
+        setExportError(null)
+        setIsRecording(true)
+        setProgress(0)
+        try {
+            await exportChartMp4(exportConfig, {
+                width: exportWidth,
+                height: exportHeight,
+                fps: videoFps,
+                durationSec,
+                fileName: 'elevation-graph.mp4',
+                onProgress: setProgress,
+            })
+        } catch (e) {
+            setExportError(
+                e instanceof Error
+                    ? e.message
+                    : '動画の書き出しに失敗しました。',
+            )
+        } finally {
+            setIsRecording(false)
+        }
+    }
+
+    const parsePositiveInt = (value: string): number => {
+        const parsed = Number.parseInt(value, 10)
+        return Number.isNaN(parsed) ? 0 : parsed
     }
 
     return (
@@ -170,17 +251,76 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                     redraw
                     data={barData}
                     options={barOptions}
-                    ref={chartRef}
                     plugins={barPlugins}
                 />
             </ChartCanvas>
-            <Button
-                onClick={onClick}
-                startIcon={<DownloadIcon />}
-                variant="contained"
-            >
-                PNGダウンロード
-            </Button>
+            <Stack spacing={2}>
+                <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+                    <TextField
+                        type="number"
+                        label="幅(px)"
+                        size="small"
+                        value={exportWidth}
+                        onChange={(e) =>
+                            setExportWidth(parsePositiveInt(e.target.value))
+                        }
+                    />
+                    <TextField
+                        type="number"
+                        label="高さ(px)"
+                        size="small"
+                        value={exportHeight}
+                        onChange={(e) =>
+                            setExportHeight(parsePositiveInt(e.target.value))
+                        }
+                    />
+                    <TextField
+                        type="number"
+                        label="動画の長さ(秒)"
+                        size="small"
+                        value={durationSec}
+                        onChange={(e) =>
+                            setDurationSec(parsePositiveInt(e.target.value))
+                        }
+                    />
+                </Stack>
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    sx={{ flexWrap: 'wrap' }}
+                >
+                    <Button
+                        onClick={onDownloadPng}
+                        startIcon={<DownloadIcon />}
+                        variant="contained"
+                        disabled={!sizeIsValid}
+                    >
+                        PNGダウンロード
+                    </Button>
+                    <Button
+                        onClick={onDownloadMp4}
+                        startIcon={
+                            isRecording ? (
+                                <CircularProgress size={16} color="inherit" />
+                            ) : (
+                                <VideocamIcon />
+                            )
+                        }
+                        variant="contained"
+                        disabled={!canExportVideo}
+                    >
+                        {isRecording
+                            ? `MP4生成中... ${Math.round(progress * 100)}%`
+                            : 'MP4ダウンロード'}
+                    </Button>
+                </Stack>
+                {exportError !== null && (
+                    <Typography color="error" variant="body2">
+                        {exportError}
+                    </Typography>
+                )}
+            </Stack>
         </div>
     )
 }
