@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import { ChartConfiguration } from 'chart.js'
 
+import { ChartAnimationPreview } from './ChartAnimationPreview'
 import { exportChartMp4, exportChartPng } from '../models/chart-export'
 
 type ExportFormat = 'png' | 'mp4'
@@ -320,6 +321,25 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
                             disabled={isRecording}
                         />
                     </Stack>
+                </Box>
+            )}
+
+            {format === 'mp4' && sizeIsValid && (
+                <Box>
+                    <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                    >
+                        プレビュー
+                    </Typography>
+                    <ChartAnimationPreview
+                        config={props.config}
+                        animationSec={animationSec}
+                        holdSec={holdSec}
+                        aspectRatio={exportWidth / exportHeight}
+                        disabled={isRecording}
+                    />
                 </Box>
             )}
 
