@@ -106,18 +106,23 @@ export interface VideoExportOptions {
     width: number
     height: number
     fps: number
-    durationSec: number
+    /** Seconds spent revealing the bars from left to right. */
+    animationSec: number
+    /** Seconds the completed graph stays on screen after the animation. */
+    holdSec: number
     fileName: string
     onProgress?: (ratio: number) => void
 }
 
 /**
- * Exports an animated MP4 that reveals the bars from left to right.
+ * Exports an animated MP4 that reveals the bars from left to right, then holds
+ * the completed graph on screen.
  *
- * Frames are rendered deterministically (not in real time) by revealing an
- * increasing slice of the dataset, then encoded to H.264 via WebCodecs and
- * muxed into an MP4 container. Throws with a meaningful message when the
- * browser lacks WebCodecs / H.264 support.
+ * Frames are rendered deterministically (not in real time): during the
+ * animation phase an increasing slice of the dataset is revealed, and during
+ * the hold phase all bars stay visible. Frames are encoded to H.264 via
+ * WebCodecs and muxed into an MP4 container. Throws with a meaningful message
+ * when the browser lacks WebCodecs / H.264 support.
  */
 export const exportChartMp4 = async (
     config: ChartConfiguration<'bar'>,
@@ -125,7 +130,8 @@ export const exportChartMp4 = async (
         width,
         height,
         fps,
-        durationSec,
+        animationSec,
+        holdSec,
         fileName,
         onProgress,
     }: VideoExportOptions,
@@ -164,7 +170,9 @@ export const exportChartMp4 = async (
         videoHeight,
     )
     const fullData = [...(chart.data.datasets[0].data as number[])]
-    const totalFrames = Math.max(1, Math.round(fps * durationSec))
+    const animationFrames = Math.max(1, Math.round(fps * animationSec))
+    const holdFrames = Math.max(0, Math.round(fps * holdSec))
+    const totalFrames = animationFrames + holdFrames
     const frameDuration = Math.round(1_000_000 / fps)
 
     const muxer = new Muxer({
@@ -199,10 +207,15 @@ export const exportChartMp4 = async (
                 throw encodeError
             }
 
-            const revealCount = Math.max(
-                1,
-                Math.round((fullData.length * (frame + 1)) / totalFrames),
-            )
+            const revealCount =
+                frame < animationFrames
+                    ? Math.max(
+                          1,
+                          Math.round(
+                              (fullData.length * (frame + 1)) / animationFrames,
+                          ),
+                      )
+                    : fullData.length
             chart.data.datasets[0].data = fullData.map((v, i) =>
                 i < revealCount ? v : (null as unknown as number),
             )

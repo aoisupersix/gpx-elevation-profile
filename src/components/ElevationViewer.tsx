@@ -42,7 +42,7 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                 }
             />
             <CardContent>
-                <Accordion>
+                <Accordion defaultExpanded>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel2-content"
@@ -53,12 +53,12 @@ export const ElevationViewer: React.FC<ElevationViewerProps> = (props) => {
                             text="斜度プロファイル"
                         />
                     </AccordionSummary>
-                    <AccordionSummary>
+                    <AccordionDetails>
                         <ElevationGraph
                             points={props.points}
                             setting={props.setting}
                         />
-                    </AccordionSummary>
+                    </AccordionDetails>
                 </Accordion>
                 <Accordion slotProps={{ transition: { timeout: 300 } }}>
                     <AccordionSummary

@@ -3,8 +3,12 @@ import * as React from 'react'
 import DownloadIcon from '@mui/icons-material/Download'
 import VideocamIcon from '@mui/icons-material/Videocam'
 import {
+    Box,
     Button,
     CircularProgress,
+    Divider,
+    InputAdornment,
+    MenuItem,
     Stack,
     TextField,
     Typography,
@@ -33,6 +37,26 @@ import { ProfileSetting } from '../models/profile-setting'
 import { ceilToMultiple, chunk, roundByDigits } from '../models/util'
 
 const videoFps = 30
+
+interface ResolutionPreset {
+    label: string
+    width: number
+    height: number
+}
+
+/**
+ * Selectable output resolutions. The WQHD preset is the default; "カスタム"
+ * lets the user enter an arbitrary width/height.
+ */
+const resolutionPresets: ResolutionPreset[] = [
+    { label: 'WQHD (2560×1440)', width: 2560, height: 1440 },
+    { label: 'フルHD (1920×1080)', width: 1920, height: 1080 },
+    { label: '4K UHD (3840×2160)', width: 3840, height: 2160 },
+    { label: 'HD (1280×720)', width: 1280, height: 720 },
+]
+
+const customPresetLabel = 'カスタム'
+const defaultResolution = resolutionPresets[0]
 
 interface ElevationViewerProps {
     points: DistancePoint[]
@@ -64,9 +88,24 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
             legend: {
                 display: false,
             },
+            tooltip: {
+                callbacks: {
+                    title: (items) => {
+                        const point = props.points[items[0].dataIndex]
+                        return `合計距離:${roundByDigits(
+                            point.totalDistance,
+                            1,
+                        )}m 標高:${roundByDigits(
+                            point.elevation,
+                            1,
+                        )}m 平均勾配:${roundByDigits(point.averageSlope, 1)}%`
+                    },
+                    label: () => '',
+                },
+            },
         },
         scales: {
-            xAxis: {
+            x: {
                 title: {
                     display: true,
                     text: '距離(km)',
@@ -95,7 +134,7 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                     },
                 },
             },
-            yAxis: {
+            y: {
                 title: {
                     display: true,
                     text: '標高(m)',
@@ -130,16 +169,7 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         },
     ]
 
-    const labels = props.points.map(
-        (p) =>
-            `合計距離:${roundByDigits(
-                p.totalDistance,
-                1,
-            )}m 標高:${roundByDigits(p.elevation, 1)}m 平均勾配:${roundByDigits(
-                p.averageSlope,
-                1,
-            )}%`,
-    )
+    const labels = props.points.map((p) => p.totalDistance)
     const colors: Color[] = props.points.map((p) => {
         const color = getElevationColor(
             props.setting.elevationColors,
@@ -178,8 +208,8 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
             ...barOptions,
             scales: {
                 ...barOptions.scales,
-                yAxis: {
-                    ...barOptions.scales?.yAxis,
+                y: {
+                    ...barOptions.scales?.y,
                     max: ceilToMultiple(maxElevation + 100, 100),
                 },
             },
@@ -187,15 +217,34 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         plugins: barPlugins,
     }
 
-    const [exportWidth, setExportWidth] = React.useState(1920)
-    const [exportHeight, setExportHeight] = React.useState(1080)
-    const [durationSec, setDurationSec] = React.useState(6)
+    const [presetLabel, setPresetLabel] = React.useState(
+        defaultResolution.label,
+    )
+    const [exportWidth, setExportWidth] = React.useState(
+        defaultResolution.width,
+    )
+    const [exportHeight, setExportHeight] = React.useState(
+        defaultResolution.height,
+    )
+    const [animationSec, setAnimationSec] = React.useState(2)
+    const [holdSec, setHoldSec] = React.useState(15)
     const [isRecording, setIsRecording] = React.useState(false)
     const [progress, setProgress] = React.useState(0)
     const [exportError, setExportError] = React.useState<string | null>(null)
 
+    const isCustomResolution = presetLabel === customPresetLabel
     const sizeIsValid = exportWidth > 0 && exportHeight > 0
-    const canExportVideo = sizeIsValid && durationSec > 0 && !isRecording
+    const canExportVideo =
+        sizeIsValid && animationSec > 0 && holdSec >= 0 && !isRecording
+
+    const onSelectPreset = (label: string) => {
+        setPresetLabel(label)
+        const preset = resolutionPresets.find((p) => p.label === label)
+        if (preset !== undefined) {
+            setExportWidth(preset.width)
+            setExportHeight(preset.height)
+        }
+    }
 
     const onDownloadPng = () => {
         setExportError(null)
@@ -224,7 +273,8 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                 width: exportWidth,
                 height: exportHeight,
                 fps: videoFps,
-                durationSec,
+                animationSec,
+                holdSec,
                 fileName: 'elevation-graph.mp4',
                 onProgress: setProgress,
             })
@@ -244,8 +294,25 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
         return Number.isNaN(parsed) ? 0 : parsed
     }
 
+    const parseNonNegativeNumber = (value: string): number => {
+        const parsed = Number.parseFloat(value)
+        return Number.isNaN(parsed) || parsed < 0 ? 0 : parsed
+    }
+
+    const onChangeWidth = (value: string) => {
+        setPresetLabel(customPresetLabel)
+        setExportWidth(parsePositiveInt(value))
+    }
+
+    const onChangeHeight = (value: string) => {
+        setPresetLabel(customPresetLabel)
+        setExportHeight(parsePositiveInt(value))
+    }
+
+    const secondsAdornment = <InputAdornment position="end">秒</InputAdornment>
+
     return (
-        <div>
+        <Stack spacing={3}>
             <ChartCanvas className="chart-container">
                 <Bar
                     redraw
@@ -254,40 +321,117 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                     plugins={barPlugins}
                 />
             </ChartCanvas>
+
+            <Divider />
+
             <Stack spacing={2}>
-                <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
-                    <TextField
-                        type="number"
-                        label="幅(px)"
-                        size="small"
-                        value={exportWidth}
-                        onChange={(e) =>
-                            setExportWidth(parsePositiveInt(e.target.value))
-                        }
-                    />
-                    <TextField
-                        type="number"
-                        label="高さ(px)"
-                        size="small"
-                        value={exportHeight}
-                        onChange={(e) =>
-                            setExportHeight(parsePositiveInt(e.target.value))
-                        }
-                    />
-                    <TextField
-                        type="number"
-                        label="動画の長さ(秒)"
-                        size="small"
-                        value={durationSec}
-                        onChange={(e) =>
-                            setDurationSec(parsePositiveInt(e.target.value))
-                        }
-                    />
-                </Stack>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    画像・動画のエクスポート
+                </Typography>
+
+                <Box>
+                    <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                    >
+                        解像度
+                    </Typography>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ flexWrap: 'wrap', gap: 2 }}
+                    >
+                        <TextField
+                            select
+                            label="プリセット"
+                            size="small"
+                            value={presetLabel}
+                            onChange={(e) => onSelectPreset(e.target.value)}
+                            sx={{ minWidth: 200 }}
+                        >
+                            {resolutionPresets.map((p) => (
+                                <MenuItem key={p.label} value={p.label}>
+                                    {p.label}
+                                </MenuItem>
+                            ))}
+                            <MenuItem value={customPresetLabel}>
+                                {customPresetLabel}
+                            </MenuItem>
+                        </TextField>
+                        <TextField
+                            type="number"
+                            label="幅(px)"
+                            size="small"
+                            value={exportWidth}
+                            onChange={(e) => onChangeWidth(e.target.value)}
+                            sx={{ width: 120 }}
+                            disabled={!isCustomResolution}
+                        />
+                        <TextField
+                            type="number"
+                            label="高さ(px)"
+                            size="small"
+                            value={exportHeight}
+                            onChange={(e) => onChangeHeight(e.target.value)}
+                            sx={{ width: 120 }}
+                            disabled={!isCustomResolution}
+                        />
+                    </Stack>
+                </Box>
+
+                <Box>
+                    <Typography
+                        variant="subtitle2"
+                        color="text.secondary"
+                        gutterBottom
+                    >
+                        動画の時間
+                    </Typography>
+                    <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ flexWrap: 'wrap', gap: 2 }}
+                    >
+                        <TextField
+                            type="number"
+                            label="アニメーション時間"
+                            size="small"
+                            value={animationSec}
+                            onChange={(e) =>
+                                setAnimationSec(
+                                    parseNonNegativeNumber(e.target.value),
+                                )
+                            }
+                            slotProps={{
+                                input: { endAdornment: secondsAdornment },
+                            }}
+                            helperText="バーが伸びる時間"
+                            sx={{ width: 180 }}
+                        />
+                        <TextField
+                            type="number"
+                            label="完了後の待機時間"
+                            size="small"
+                            value={holdSec}
+                            onChange={(e) =>
+                                setHoldSec(
+                                    parseNonNegativeNumber(e.target.value),
+                                )
+                            }
+                            slotProps={{
+                                input: { endAdornment: secondsAdornment },
+                            }}
+                            helperText="完成後に静止表示する時間"
+                            sx={{ width: 180 }}
+                        />
+                    </Stack>
+                </Box>
+
                 <Stack
                     direction="row"
                     spacing={2}
-                    sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+                    sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 2 }}
                 >
                     <Button
                         onClick={onDownloadPng}
@@ -320,6 +464,6 @@ export const ElevationGraph: React.FC<ElevationViewerProps> = (props) => {
                     </Typography>
                 )}
             </Stack>
-        </div>
+        </Stack>
     )
 }
