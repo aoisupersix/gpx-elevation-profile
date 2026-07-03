@@ -70,11 +70,73 @@ export const exportChartPng = (
     }
 }
 
+const MACROBLOCK = 16
+
+/** [levelHex, maxMacroblocksPerSecond, maxFrameMacroblocks] per H.264 Annex A. */
+type H264Level = readonly [number, number, number]
+
+const H264_LEVELS: readonly H264Level[] = [
+    [0x1e, 40_500, 1620], // 3.0
+    [0x1f, 108_000, 3600], // 3.1
+    [0x20, 216_000, 5120], // 3.2
+    [0x28, 245_760, 8192], // 4.0
+    [0x29, 245_760, 8192], // 4.1
+    [0x2a, 522_240, 8704], // 4.2
+    [0x32, 589_824, 22_080], // 5.0
+    [0x33, 983_040, 36_864], // 5.1
+    [0x34, 2_073_600, 36_864], // 5.2
+    [0x3c, 4_177_920, 139_264], // 6.0
+    [0x3d, 8_355_840, 139_264], // 6.1
+]
+
+/** 6.2 — the highest defined level; used when nothing smaller fits. */
+const MAX_H264_LEVEL: H264Level = [0x3e, 16_711_680, 139_264]
+
+/** Smallest H.264 level whose frame-size and rate limits fit the output. */
+const h264LevelHex = (
+    width: number,
+    height: number,
+    frameRate: number,
+): number => {
+    const frameMbs =
+        Math.ceil(width / MACROBLOCK) * Math.ceil(height / MACROBLOCK)
+    const mbPerSec = frameMbs * frameRate
+    const level =
+        H264_LEVELS.find(
+            ([, maxRate, maxFrame]) =>
+                mbPerSec <= maxRate && frameMbs <= maxFrame,
+        ) ?? MAX_H264_LEVEL
+    return level[0]
+}
+
 /**
- * H.264 codec candidates ordered from higher to lower capability.
- * The first one supported by the platform encoder is used.
+ * H.264 codec candidates for the given output, ordered from higher to lower
+ * capability (High → Main → Baseline). The level is derived from the frame
+ * size and rate so exports work at any resolution, not just up to 1080p.
  */
-const codecCandidates = ['avc1.640028', 'avc1.4d0028', 'avc1.42001f']
+const codecCandidates = (
+    width: number,
+    height: number,
+    frameRate: number,
+): string[] => {
+    const level = h264LevelHex(width, height, frameRate)
+        .toString(16)
+        .padStart(2, '0')
+    return [`avc1.6400${level}`, `avc1.4d00${level}`, `avc1.4200${level}`]
+}
+
+/** Tuned so the default 2560x1440@60 yields ~12 Mbps; scales with pixels. */
+const BITS_PER_PIXEL_PER_FRAME = 12_000_000 / (2560 * 1440 * 60)
+
+const videoBitrate = (
+    width: number,
+    height: number,
+    frameRate: number,
+): number =>
+    Math.max(
+        Math.round(width * height * frameRate * BITS_PER_PIXEL_PER_FRAME),
+        2_000_000,
+    )
 
 const pickSupportedCodec = async (
     width: number,
@@ -82,7 +144,7 @@ const pickSupportedCodec = async (
     frameRate: number,
     bitrate: number,
 ): Promise<string | undefined> => {
-    for (const codec of codecCandidates) {
+    for (const codec of codecCandidates(width, height, frameRate)) {
         try {
             const support = await VideoEncoder.isConfigSupported({
                 codec,
@@ -145,10 +207,7 @@ export const exportChartMp4 = async (
     // H.264 requires even dimensions.
     const videoWidth = width - (width % 2)
     const videoHeight = height - (height % 2)
-    const bitrate = Math.min(
-        20_000_000,
-        Math.round(videoWidth * videoHeight * fps * 0.1),
-    )
+    const bitrate = videoBitrate(videoWidth, videoHeight, fps)
 
     const codec = await pickSupportedCodec(
         videoWidth,
