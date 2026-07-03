@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome",
       "url": "http://localhost:8080",
@@ -17,14 +17,12 @@
       "request": "launch",
       "name": "jest[debug]",
       "program": "${workspaceRoot}/node_modules/.bin/jest",
-      "args": [
-        "--runInBand"
-      ],
+      "args": ["--runInBand"],
       "windows": {
         "program": "${workspaceRoot}/node_modules/jest/bin/jest.js"
       },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
-    },
+    }
   ]
 }
