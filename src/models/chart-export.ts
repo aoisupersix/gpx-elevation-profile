@@ -185,6 +185,8 @@ export interface VideoExportOptions {
     width: number
     height: number
     fps: number
+    /** Seconds the initial (pre-animation) frame is held before revealing. */
+    startDelaySec: number
     /** Seconds spent revealing the bars from left to right. */
     animationSec: number
     /** Seconds the completed graph stays on screen after the animation. */
@@ -209,6 +211,7 @@ export const exportChartMp4 = async (
         width,
         height,
         fps,
+        startDelaySec,
         animationSec,
         holdSec,
         fileName,
@@ -246,9 +249,10 @@ export const exportChartMp4 = async (
         videoHeight,
     )
     const fullData = [...(chart.data.datasets[0].data as number[])]
+    const delayFrames = Math.max(0, Math.round(fps * startDelaySec))
     const animationFrames = Math.max(1, Math.round(fps * animationSec))
     const holdFrames = Math.max(0, Math.round(fps * holdSec))
-    const totalFrames = animationFrames + holdFrames
+    const totalFrames = delayFrames + animationFrames + holdFrames
     const frameDuration = Math.round(1_000_000 / fps)
 
     const muxer = new Muxer({
@@ -284,12 +288,14 @@ export const exportChartMp4 = async (
             }
 
             const revealCount =
-                frame < animationFrames
-                    ? revealCountAt(
-                          fullData.length,
-                          (frame + 1) / animationFrames,
-                      )
-                    : fullData.length
+                frame < delayFrames
+                    ? revealCountAt(fullData.length, 0)
+                    : frame < delayFrames + animationFrames
+                      ? revealCountAt(
+                            fullData.length,
+                            (frame - delayFrames + 1) / animationFrames,
+                        )
+                      : fullData.length
             chart.data.datasets[0].data = revealedData(fullData, revealCount)
             chart.update('none')
 

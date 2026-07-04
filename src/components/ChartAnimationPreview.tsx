@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import ReplayIcon from '@mui/icons-material/Replay'
+import StopIcon from '@mui/icons-material/Stop'
 import { Box, Button, LinearProgress, Stack } from '@mui/material'
 import { Chart, ChartConfiguration } from 'chart.js'
 
@@ -9,6 +10,8 @@ import { revealCountAt, revealedData } from '../models/chart-export'
 
 interface ChartAnimationPreviewProps {
     config: ChartConfiguration<'bar'>
+    /** Seconds the initial (pre-animation) frame is held before revealing. */
+    startDelaySec: number
     /** Seconds spent revealing the bars from left to right. */
     animationSec: number
     /** Seconds the completed graph stays on screen after the animation. */
@@ -104,7 +107,8 @@ export const ChartAnimationPreview: React.FC<ChartAnimationPreviewProps> = (
         setIsPlaying(true)
         setHasPlayed(true)
 
-        const totalSec = props.animationSec + props.holdSec
+        const totalSec =
+            props.startDelaySec + props.animationSec + props.holdSec
         let startTime: number | null = null
 
         const step = (now: number) => {
@@ -112,8 +116,13 @@ export const ChartAnimationPreview: React.FC<ChartAnimationPreviewProps> = (
                 startTime = now
             }
             const elapsedSec = (now - startTime) / 1000
+            const animationElapsedSec = elapsedSec - props.startDelaySec
             const revealProgress =
-                props.animationSec > 0 ? elapsedSec / props.animationSec : 1
+                animationElapsedSec <= 0
+                    ? 0
+                    : props.animationSec > 0
+                      ? animationElapsedSec / props.animationSec
+                      : 1
             const revealCount =
                 revealProgress >= 1
                     ? fullDataRef.current.length
@@ -133,7 +142,21 @@ export const ChartAnimationPreview: React.FC<ChartAnimationPreviewProps> = (
         }
 
         rafRef.current = requestAnimationFrame(step)
-    }, [props.animationSec, props.holdSec, renderReveal, stopAnimation])
+    }, [
+        props.startDelaySec,
+        props.animationSec,
+        props.holdSec,
+        renderReveal,
+        stopAnimation,
+    ])
+
+    // Abort playback and restore the completed (fully revealed) chart.
+    const stop = React.useCallback(() => {
+        stopAnimation()
+        renderReveal(fullDataRef.current.length)
+        setProgressPercent(0)
+        setIsPlaying(false)
+    }, [renderReveal, stopAnimation])
 
     return (
         <Stack spacing={1}>
@@ -155,9 +178,23 @@ export const ChartAnimationPreview: React.FC<ChartAnimationPreviewProps> = (
                     variant="outlined"
                     startIcon={hasPlayed ? <ReplayIcon /> : <PlayArrowIcon />}
                     onClick={play}
-                    disabled={props.disabled || isPlaying}
+                    disabled={props.disabled}
                 >
-                    {hasPlayed ? 'もう一度再生' : 'プレビュー再生'}
+                    {isPlaying
+                        ? '最初から再生'
+                        : hasPlayed
+                          ? 'もう一度再生'
+                          : 'プレビュー再生'}
+                </Button>
+                <Button
+                    size="small"
+                    variant="outlined"
+                    color="inherit"
+                    startIcon={<StopIcon />}
+                    onClick={stop}
+                    disabled={props.disabled || !isPlaying}
+                >
+                    中断
                 </Button>
                 <LinearProgress
                     variant="determinate"

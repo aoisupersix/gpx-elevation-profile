@@ -69,6 +69,7 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
         defaultResolution.height,
     )
     const [videoFps, setVideoFps] = React.useState<number>(defaultFps)
+    const [startDelaySec, setStartDelaySec] = React.useState(2)
     const [animationSec, setAnimationSec] = React.useState(2)
     const [holdSec, setHoldSec] = React.useState(15)
     const [isRecording, setIsRecording] = React.useState(false)
@@ -80,7 +81,11 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
     const canExport =
         format === 'png'
             ? sizeIsValid
-            : sizeIsValid && animationSec > 0 && holdSec >= 0 && !isRecording
+            : sizeIsValid &&
+              startDelaySec >= 0 &&
+              animationSec > 0 &&
+              holdSec >= 0 &&
+              !isRecording
 
     const onSelectPreset = (label: string) => {
         setPresetLabel(label)
@@ -138,6 +143,7 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
                 width: exportWidth,
                 height: exportHeight,
                 fps: videoFps,
+                startDelaySec,
                 animationSec,
                 holdSec,
                 fileName: 'elevation-graph.mp4',
@@ -288,6 +294,23 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
                         </TextField>
                         <TextField
                             type="number"
+                            label="開始前の待機時間"
+                            size="small"
+                            value={startDelaySec}
+                            onChange={(e) =>
+                                setStartDelaySec(
+                                    parseNonNegativeNumber(e.target.value),
+                                )
+                            }
+                            slotProps={{
+                                input: { endAdornment: secondsAdornment },
+                            }}
+                            helperText="アニメーション開始前に静止表示する時間"
+                            sx={{ width: 180 }}
+                            disabled={isRecording}
+                        />
+                        <TextField
+                            type="number"
                             label="アニメーション時間"
                             size="small"
                             value={animationSec}
@@ -335,6 +358,7 @@ export const ExportPanel: React.FC<ExportPanelProps> = (props) => {
                     </Typography>
                     <ChartAnimationPreview
                         config={props.config}
+                        startDelaySec={startDelaySec}
                         animationSec={animationSec}
                         holdSec={holdSec}
                         aspectRatio={exportWidth / exportHeight}
